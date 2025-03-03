@@ -10,6 +10,7 @@ from rcl_interfaces.msg import SetParametersResult
 from wall_follower.visualization_tools import VisualizationTools
 
 
+
 class WallFollower(Node):
 
     def __init__(self):
@@ -29,6 +30,14 @@ class WallFollower(Node):
         self.SIDE = self.get_parameter('side').get_parameter_value().integer_value
         self.VELOCITY = self.get_parameter('velocity').get_parameter_value().double_value
         self.DESIRED_DISTANCE = self.get_parameter('desired_distance').get_parameter_value().double_value
+
+        #safety controller testing ################
+        self.MIN_SAFE_DISTANCE = 0.5
+        self.DANGER_ZONE_DISTANCE = 1.0
+        self.SAFETY_ANGLE_RANGE = 1.0
+        self.MAX_SPEED = 2.0
+        self.is_safe = True
+        ################
 
          # This activates the parameters_callback function so that the tests are able
         # to change the parameters during testing.
@@ -101,17 +110,48 @@ class WallFollower(Node):
         steering_angle = self.Kp * error + self.Kd * derivative
         #self.get_logger().info(f'{steering_angle}')
 
+        #######################
+        #Safety controller - implemented here in lieu of mux hierarchy
+        safety_front_indices = np.where(np.abs(angles) <= self.SAFETY_ANGLE_RANGE / 2.0)
+        safety_front_distances = np.array(msg.ranges)[safety_front_indices]
+        
+        safety_valid_indices = np.isfinite(safety_front_distances)
+        safety_front_distances = safety_front_distances[safety_valid_indices]
+        
+        # if len(front_distances) == 0:
+        #     self.get_logger().warn("No valid distance readings in front of vehicle!")
+        #     return
+        
+        min_distance = np.min(safety_front_distances)
+        safety_reduce = self.safety_controller(min_distance)
+        #######################
+
         # Create an AckermannDriveStamped message
         drive_msg = AckermannDriveStamped()
         drive_msg.drive.steering_angle = (-1*self.SIDE) * steering_angle
         drive_msg.drive.acceleration = 0.0
         drive_msg.drive.jerk = 0.0
-        drive_msg.drive.speed = self.VELOCITY
+        drive_msg.drive.speed = self.VELOCITY*safety_reduce
 
         # Publish the drive message
         self.drive_publisher.publish(drive_msg)
         
-    
+    def safety_controller(self, min_distance):        
+        if min_distance < self.MIN_SAFE_DISTANCE:
+            # Emergency stop - obstacle is too close
+            # self.get_logger().warn(f"Emergency stop! Obstacle at {min_distance:.2f}m")
+            safety_reduce = 0.0
+            self.is_safe = False
+        elif min_distance < self.DANGER_ZONE_DISTANCE:
+            # In the danger zone - calculate a safe speed proportional to distance (but keep steering as is)
+            safety_reduce = (min_distance - self.MIN_SAFE_DISTANCE) / (self.DANGER_ZONE_DISTANCE - self.MIN_SAFE_DISTANCE)
+            # self.get_logger().info(f"Slowing down! Obstacle at {min_distance:.2f}m, speed reduced to {slow_msg.drive.speed:.2f}")
+            self.is_safe = True
+        else: #nothing, just INTEGRATE NORMAL WALL FOLLOWER HERE
+            safety_reduce = 1
+            self.is_safe = True
+        return safety_reduce
+
     def linear_regression(self, distances):
         # Convert polar coordinates to Cartesian
         angles = np.linspace(-1*self.angle_max, -1*self.angle_min, len(distances)) if self.SIDE == -1 else np.linspace(self.angle_min, self.angle_max, len(distances))
