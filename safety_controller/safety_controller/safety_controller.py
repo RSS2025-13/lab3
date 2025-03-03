@@ -97,6 +97,9 @@ class SafetyController(Node):
             self.is_safe = True
         else:
             # INTEGRATE NORMAL WALL FOLLOWER HERE
+            drive_msg = AckermannDriveStamped()
+            drive_msg.drive.speed = self.MAX_SPEED
+            self.drive_publisher.publish(drive_msg)
             self.is_safe = True
         
     def parameters_callback(self, params):

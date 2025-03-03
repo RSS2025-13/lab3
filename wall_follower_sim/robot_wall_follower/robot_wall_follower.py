@@ -35,9 +35,9 @@ class WallFollower(Node):
         # DO NOT MODIFY THIS! 
         self.add_on_set_parameters_callback(self.parameters_callback)
 		
-	# TODO: Initialize your publishers and subscribers here
+    	# TODO: Initialize your publishers and subscribers here
         self.scan_subscriber = self.create_subscription(LaserScan, self.SCAN_TOPIC, self.scan_callback, 10) 
-        self.drive_publisher = self.create_publisher(AckermannDriveStamped, self.DRIVE_TOPIC, 10)
+        self.drive_publisher = self.create_publisher(AckermannDriveStamped, "/drive", 10)
 
         # a publisher for our line marker
         self.line_pub = self.create_publisher(Marker, '/wall', 1)
