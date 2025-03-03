@@ -8,5 +8,7 @@ To run new robot_wall_follower package (for sim)
 4. ros2 launch robot_wall_follower launch_test.launch.py
 
 To test safety_controller:
-To launch: ros2 launch safety_controller safety_controller.launch.py
-To test driving commands: ros2 topic pub --once /drive ackermann_msgs/msg/AckermannDriveStamped "{drive: {speed: 2.0, steering_angle: 0.0}}"
+
+1. Launch sim: ros2 launch racecar_simulator simulate.launch.xml
+2. To launch: ros2 launch safety_controller safety_controller.launch.py
+3. To test driving commands: ros2 topic pub --once /drive ackermann_msgs/msg/AckermannDriveStamped "{drive: {speed: 2.0, steering_angle: 0.0}}"
