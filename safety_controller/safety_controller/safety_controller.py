@@ -7,6 +7,7 @@ from ackermann_msgs.msg import AckermannDriveStamped
 from rcl_interfaces.msg import SetParametersResult
 
 '''
+Sim: ros2 launch racecar_simulator simulate.launch.xml
 To launch: ros2 launch safety_controller safety_controller.launch.py
 To test driving commands: ros2 topic pub --once /drive ackermann_msgs/msg/AckermannDriveStamped "{drive: {speed: 2.0, steering_angle: 0.0}}"
 
