@@ -1,0 +1,6 @@
+<launch>
+  <!-- Launch the wall follower with parameters -->
+  <node pkg="robot_wall_follower" name="robot_wall_follower" exec="robot_wall_follower" output="screen">
+    <param from="$(find-pkg-share wall_follower)/params.yaml"/>
+  </node>
+</launch>
