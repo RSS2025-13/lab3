@@ -1,0 +1,43 @@
+[2.898s] Invoking command in '/home/racecar/racecar_ws/src/lab3/safety_controller': PYTHONPATH=/home/racecar/racecar_ws/src/lab3/build/safety_controller/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/racecar/racecar_ws/src/lab3/install/safety_controller/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/safety_controller build --build-base /home/racecar/racecar_ws/src/lab3/build/safety_controller/build install --record /home/racecar/racecar_ws/src/lab3/build/safety_controller/install.log --install-scripts $base/lib/safety_controller --single-version-externally-managed install_data
+[3.582s] /usr/lib/python3/dist-packages/setuptools/dist.py:723: UserWarning: Usage of dash-separated 'script-dir' will not be supported in future versions. Please use the underscore name 'script_dir' instead
+[3.590s]   warnings.warn(
+[3.664s] running egg_info
+[3.669s] creating ../build/safety_controller/safety_controller.egg-info
+[3.673s] writing ../build/safety_controller/safety_controller.egg-info/PKG-INFO
+[3.702s] writing dependency_links to ../build/safety_controller/safety_controller.egg-info/dependency_links.txt
+[3.714s] writing entry points to ../build/safety_controller/safety_controller.egg-info/entry_points.txt
+[3.720s] writing requirements to ../build/safety_controller/safety_controller.egg-info/requires.txt
+[3.723s] writing top-level names to ../build/safety_controller/safety_controller.egg-info/top_level.txt
+[3.742s] writing manifest file '../build/safety_controller/safety_controller.egg-info/SOURCES.txt'
+[3.755s] reading manifest file '../build/safety_controller/safety_controller.egg-info/SOURCES.txt'
+[3.768s] writing manifest file '../build/safety_controller/safety_controller.egg-info/SOURCES.txt'
+[3.770s] running build
+[3.771s] running build_py
+[3.792s] creating /home/racecar/racecar_ws/src/lab3/build/safety_controller/build
+[3.796s] creating /home/racecar/racecar_ws/src/lab3/build/safety_controller/build/lib
+[3.800s] creating /home/racecar/racecar_ws/src/lab3/build/safety_controller/build/lib/safety_controller
+[3.805s] copying safety_controller/__init__.py -> /home/racecar/racecar_ws/src/lab3/build/safety_controller/build/lib/safety_controller
+[3.824s] copying safety_controller/safety_controller.py -> /home/racecar/racecar_ws/src/lab3/build/safety_controller/build/lib/safety_controller
+[3.842s] running install
+[3.848s] running install_lib
+[3.857s] creating /home/racecar/racecar_ws/src/lab3/install/safety_controller/lib/python3.10/site-packages/safety_controller
+[3.868s] copying /home/racecar/racecar_ws/src/lab3/build/safety_controller/build/lib/safety_controller/__init__.py -> /home/racecar/racecar_ws/src/lab3/install/safety_controller/lib/python3.10/site-packages/safety_controller
+[3.899s] copying /home/racecar/racecar_ws/src/lab3/build/safety_controller/build/lib/safety_controller/safety_controller.py -> /home/racecar/racecar_ws/src/lab3/install/safety_controller/lib/python3.10/site-packages/safety_controller
+[3.915s] byte-compiling /home/racecar/racecar_ws/src/lab3/install/safety_controller/lib/python3.10/site-packages/safety_controller/__init__.py to __init__.cpython-310.pyc
+[3.960s] byte-compiling /home/racecar/racecar_ws/src/lab3/install/safety_controller/lib/python3.10/site-packages/safety_controller/safety_controller.py to safety_controller.cpython-310.pyc
+[3.998s] running install_data
+[4.008s] creating /home/racecar/racecar_ws/src/lab3/install/safety_controller/share/ament_index
+[4.023s] creating /home/racecar/racecar_ws/src/lab3/install/safety_controller/share/ament_index/resource_index
+[4.025s] creating /home/racecar/racecar_ws/src/lab3/install/safety_controller/share/ament_index/resource_index/packages
+[4.041s] copying resource/safety_controller -> /home/racecar/racecar_ws/src/lab3/install/safety_controller/share/ament_index/resource_index/packages
+[4.053s] copying package.xml -> /home/racecar/racecar_ws/src/lab3/install/safety_controller/share/safety_controller
+[4.063s] creating /home/racecar/racecar_ws/src/lab3/install/safety_controller/share/safety_controller/launch
+[4.066s] copying launch/safety_controller.launch.py -> /home/racecar/racecar_ws/src/lab3/install/safety_controller/share/safety_controller/launch
+[4.079s] creating /home/racecar/racecar_ws/src/lab3/install/safety_controller/share/safety_controller/config
+[4.096s] copying config/safety_controller_params.yaml -> /home/racecar/racecar_ws/src/lab3/install/safety_controller/share/safety_controller/config
+[4.099s] running install_egg_info
+[4.105s] Copying ../build/safety_controller/safety_controller.egg-info to /home/racecar/racecar_ws/src/lab3/install/safety_controller/lib/python3.10/site-packages/safety_controller-0.0.1-py3.10.egg-info
+[4.272s] running install_scripts
+[4.346s] Installing safety_controller_node script to /home/racecar/racecar_ws/src/lab3/install/safety_controller/lib/safety_controller
+[4.359s] writing list of installed files to '/home/racecar/racecar_ws/src/lab3/build/safety_controller/install.log'
+[4.407s] Invoked command in '/home/racecar/racecar_ws/src/lab3/safety_controller' returned '0': PYTHONPATH=/home/racecar/racecar_ws/src/lab3/build/safety_controller/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/racecar/racecar_ws/src/lab3/install/safety_controller/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/safety_controller build --build-base /home/racecar/racecar_ws/src/lab3/build/safety_controller/build install --record /home/racecar/racecar_ws/src/lab3/build/safety_controller/install.log --install-scripts $base/lib/safety_controller --single-version-externally-managed install_data
