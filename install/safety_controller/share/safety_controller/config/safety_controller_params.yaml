@@ -1,8 +1,0 @@
-/**:
-  ros__parameters:
-    scan_topic: "scan"
-    drive_topic: "drive"
-    min_safe_distance: 0.5
-    danger_zone_distance: 1.0
-    safety_angle_range: 1.0
-    max_speed: 2.0

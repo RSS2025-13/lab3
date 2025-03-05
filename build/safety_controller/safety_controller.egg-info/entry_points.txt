@@ -1,3 +1,0 @@
-[console_scripts]
-safety_controller_node = safety_controller.safety_controller:main
-

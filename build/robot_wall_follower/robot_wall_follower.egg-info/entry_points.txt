@@ -1,5 +1,0 @@
-[console_scripts]
-robot_wall_follower = robot_wall_follower.robot_wall_follower:main
-test_wall_follower = robot_wall_follower.test_wall_follower:main
-viz_example = robot_wall_follower.viz_example:main
-
