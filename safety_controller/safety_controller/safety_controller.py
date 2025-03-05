@@ -28,8 +28,9 @@ class SafetyController(Node):
     def __init__(self):
         super().__init__("safety_controller")
 
-        self.declare_parameter("scan_topic", "scan")
-        self.declare_parameter("drive_topic", "drive")
+        self.declare_parameter("scan_topic", "/scan")
+        self.declare_parameter("drive_topic", "/vesc/low_level/input/safety")
+        self.declare_parameter("nav_cmd_topic", "/vesc/low_level/ackermann_cmd")
         self.declare_parameter("min_safe_distance", 0.5)  # minimum safe distance in meters
         self.declare_parameter("danger_zone_distance", 1.0)  # distance to start slowing down
         self.declare_parameter("safety_angle_range", 1.0)  # radians to check in front
@@ -37,6 +38,7 @@ class SafetyController(Node):
 
         self.SCAN_TOPIC = self.get_parameter('scan_topic').get_parameter_value().string_value
         self.DRIVE_TOPIC = self.get_parameter('drive_topic').get_parameter_value().string_value
+        self.NAV_CMD_TOPIC = self.get_parameter('nav_cmd_topic').get_parameter_value().string_value
         self.MIN_SAFE_DISTANCE = self.get_parameter('min_safe_distance').get_parameter_value().double_value
         self.DANGER_ZONE_DISTANCE = self.get_parameter('danger_zone_distance').get_parameter_value().double_value
         self.SAFETY_ANGLE_RANGE = self.get_parameter('safety_angle_range').get_parameter_value().double_value
@@ -48,7 +50,14 @@ class SafetyController(Node):
             self.scan_callback, 
             10
         )
-        
+
+        self.nav_cmd_subscriber = self.create_subscription(
+            AckermannDriveStamped, 
+            self.NAV_CMD_TOPIC, 
+            self.nav_cmd_callback, 
+            10
+        )
+    
         self.drive_publisher = self.create_publisher(
             AckermannDriveStamped, 
             self.DRIVE_TOPIC, 
@@ -56,10 +65,18 @@ class SafetyController(Node):
         )
         
         self.is_safe = True
+        self.latest_nav_cmd = None
         self.add_on_set_parameters_callback(self.parameters_callback)
         self.get_logger().info("Safety Controller initialized")
 
+    def nav_cmd_callback(self, msg):
+        # Store the latest navigation command
+        self.latest_nav_cmd = msg
+
     def scan_callback(self, msg):
+        if self.latest_nav_cmd is None:
+            return
+
         angles = np.linspace(msg.angle_min, msg.angle_max, len(msg.ranges))
         
         front_indices = np.where(np.abs(angles) <= self.SAFETY_ANGLE_RANGE / 2.0)
@@ -68,40 +85,43 @@ class SafetyController(Node):
         valid_indices = np.isfinite(front_distances)
         front_distances = front_distances[valid_indices]
         
-        # if len(front_distances) == 0:
-        #     self.get_logger().warn("No valid distance readings in front of vehicle!")
-        #     return
+        # assume safe
+        if len(front_distances) == 0:
+            self.publish_command(self.latest_nav_cmd)
+            return
         
         min_distance = np.min(front_distances)
         
         if min_distance < self.MIN_SAFE_DISTANCE:
-            # Emergency stop - obstacle is too close
-            # self.get_logger().warn(f"Emergency stop! Obstacle at {min_distance:.2f}m")
-            
             stop_msg = AckermannDriveStamped()
             stop_msg.drive.speed = 0.0
             stop_msg.drive.steering_angle = 0.0
             stop_msg.drive.acceleration = 0.0
             stop_msg.drive.jerk = 0.0
             
-            self.drive_publisher.publish(stop_msg)
+            self.publish_command(stop_msg)
             self.is_safe = False
 
         elif min_distance < self.DANGER_ZONE_DISTANCE:
-            # In the danger zone - calculate a safe speed proportional to distance (but keep steering as is)
             safety_factor = (min_distance - self.MIN_SAFE_DISTANCE) / (self.DANGER_ZONE_DISTANCE - self.MIN_SAFE_DISTANCE)
             
-            slow_msg = AckermannDriveStamped()
-            slow_msg.drive.speed = self.MAX_SPEED * safety_factor
-            self.drive_publisher.publish(slow_msg)
-            # self.get_logger().info(f"Slowing down! Obstacle at {min_distance:.2f}m, speed reduced to {slow_msg.drive.speed:.2f}")
+            safe_cmd = self.latest_nav_cmd
+            safe_cmd.drive.speed = min(
+                self.latest_nav_cmd.drive.speed, 
+                self.MAX_SPEED * safety_factor
+            )
+            
+            self.publish_command(safe_cmd)
             self.is_safe = True
+
+        # If completely safe, publish original command
         else:
-            # INTEGRATE NORMAL WALL FOLLOWER HERE
-            drive_msg = AckermannDriveStamped()
-            drive_msg.drive.speed = self.MAX_SPEED
-            self.drive_publisher.publish(drive_msg)
+            self.publish_command(self.latest_nav_cmd)
             self.is_safe = True
+        
+    def publish_command(self, cmd):
+        if cmd is not None:
+            self.safety_publisher.publish(cmd)
         
     def parameters_callback(self, params):
         for param in params:
