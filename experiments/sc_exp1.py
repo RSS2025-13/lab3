@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# TURNING RADIUS + BOX BASED APPROACH
+
+
 import numpy as np
 import rclpy
 from rclpy.node import Node
@@ -31,8 +34,8 @@ class SafetyController(Node):
         self.declare_parameter("scan_topic", "/scan")
         self.declare_parameter("drive_topic", "/vesc/low_level/input/safety")
         self.declare_parameter("nav_cmd_topic", "/vesc/low_level/ackermann_cmd")
-        self.declare_parameter("min_safe_distance", 0.5)  # minimum safe distance in meters
-        self.declare_parameter("danger_zone_distance", 1.0)  # distance to start slowing down
+        self.declare_parameter("min_safe_distance", 0.1)  # minimum safe distance in meters
+        self.declare_parameter("danger_zone_distance", 0.2)  # distance to start slowing down
         self.declare_parameter("safety_angle_range", 1.0)  # radians to check in front
         self.declare_parameter("max_speed", 2.0)  # maximum allowed speed
 
@@ -43,6 +46,7 @@ class SafetyController(Node):
         self.DANGER_ZONE_DISTANCE = self.get_parameter('danger_zone_distance').get_parameter_value().double_value
         self.SAFETY_ANGLE_RANGE = self.get_parameter('safety_angle_range').get_parameter_value().double_value
         self.MAX_SPEED = self.get_parameter('max_speed').get_parameter_value().double_value
+
 
         self.scan_subscriber = self.create_subscription(
             LaserScan, 
@@ -67,61 +71,91 @@ class SafetyController(Node):
         self.is_safe = True
         self.latest_nav_cmd = None
         self.add_on_set_parameters_callback(self.parameters_callback)
+
+        self.CAR_LENGTH = 0.3
+        self.CAR_WIDTH = 0.32
+        self.DIST_TO_BUMPER = 0.12
+
         self.get_logger().info("Safety Controller initialized")
+
+    def stop_cmd(self):
+        msg = AckermannDriveStamped()
+        msg.drive.speed = 0.0
+        msg.drive.steering_angle = 0.0
+        if self.latest_nav_cmd:
+            msg.drive.steering_angle = self.latest_nav_cmd.drive.steering_angle
+        self.drive_publisher.publish(msg)
 
     def nav_cmd_callback(self, msg):
         # Store the latest navigation command
         self.latest_nav_cmd = msg
 
     def scan_callback(self, msg):
-        if self.latest_nav_cmd is None:
-            return
+        
+        if self.latest_nav_cmd is not None:
+            speed = self.latest_nav_cmd.drive.speed
+            steering_angle = self.latest_nav_cmd.drive.steering_angle
+        else:
+            speed = 1.0
+            steering_angle = 0.0
+
+        # EXPERIMENTATION NEED TO TUNE!!
+        stop_distance = (0.5 * speed + 0.2) ** 2
 
         angles = np.linspace(msg.angle_min, msg.angle_max, len(msg.ranges))
-        
-        front_indices = np.where(np.abs(angles) <= self.SAFETY_ANGLE_RANGE / 2.0)
-        front_distances = np.array(msg.ranges)[front_indices]
-        
-        valid_indices = np.isfinite(front_distances)
-        front_distances = front_distances[valid_indices]
-        
-        # assume safe
-        if len(front_distances) == 0:
-            self.publish_command(self.latest_nav_cmd)
+        front_distances = np.array(msg.ranges)
+        x = np.cos(angles) * front_distances
+        y = np.sin(angles) * front_distances
+
+        #-----------------------------------------------------------------------------------------------------------------------
+        # APPROACH 1 (for steering angle = 0): create rectangle at the car front and check if any points within it - if so, stop
+
+        y_lower_bound = -0.5 * self.CAR_WIDTH
+        y_upper_bound = 0.5 * self.CAR_WIDTH
+        x_lower_bound = self.DIST_TO_BUMPER
+        x_upper_bound = stop_distance + self.DIST_TO_BUMPER
+
+        y_in_rectangle = (y >= y_lower_bound) & (y <= y_upper_bound)
+        x_check = x[y_in_rectangle]
+        in_rectangle = (x_check >= x_lower_bound) & (x_check <= x_upper_bound)
+
+        if np.any(in_rectangle) and steering_angle == 0.0:
+            self.stop_cmd()
             return
+        #------------------------------------------------------------------------------------------------------------------------
         
-        min_distance = np.min(front_distances)
-        
-        if min_distance < self.MIN_SAFE_DISTANCE:
-            stop_msg = AckermannDriveStamped()
-            stop_msg.drive.speed = 0.0
-            stop_msg.drive.steering_angle = 0.0
-            stop_msg.drive.acceleration = 0.0
-            stop_msg.drive.jerk = 0.0
-            
-            self.publish_command(stop_msg)
-            self.is_safe = False
 
-        elif min_distance < self.DANGER_ZONE_DISTANCE:
-            safety_factor = (min_distance - self.MIN_SAFE_DISTANCE) / (self.DANGER_ZONE_DISTANCE - self.MIN_SAFE_DISTANCE)
-            
-            safe_cmd = AckermannDriveStamped()  # Create a new message instead of modifying
-            safe_cmd.header = self.latest_nav_cmd.header
-            safe_cmd.drive.steering_angle = self.latest_nav_cmd.drive.steering_angle
-            safe_cmd.drive.speed = min(
-            self.latest_nav_cmd.drive.speed, 
-            self.MAX_SPEED * safety_factor
-        )
-            self.publish_command(safe_cmd)
-            self.is_safe = True
+        #-------------------------------------------------------------------------------------------------------------------------
+        # APPROACH 2 (for non-zero steering angle)
 
-        # If completely safe, publish original command
-        else:
-            self.publish_command(self.latest_nav_cmd)
-            self.is_safe = True
-        
-    def publish_command(self, cmd):
-        self.drive_publisher.publish(cmd)
+        turning_sign = np.sign(steering_angle)
+        turning_radius = np.abs(self.CAR_LENGTH / np.sin(steering_angle))
+        inner_wheel_radius = turning_radius - 0.5 * self.CAR_WIDTH
+        outer_wheel_radius = turning_radius + 0.5 * self.CAR_WIDTH
+
+        inner_circle = turning_sign * inner_wheel_radius - turning_sign * np.sqrt(inner_wheel_radius**2 - x**2)
+        outer_circle = turning_sign * outer_wheel_radius - turning_sign * np.sqrt(outer_wheel_radius**2 - x**2)
+
+        distance_line = - turning_sign * np.tan(np.pi / 2 - stop_distance / turning_radius) * x + turning_sign * turning_radius
+            
+        if turning_sign == 1:
+            trace_upper = inner_circle
+            trace_lower = outer_circle
+        else: 
+            trace_upper = outer_circle
+            trace_lower = inner_circle
+            
+        inside_curve = (y >= trace_lower) & (y <= trace_upper)
+        dist_check = y[inside_curve]
+        distance_line = distance_line[inside_curve]
+        too_close_curve = dist_check >= distance_line
+
+        # stop car if any points in donut
+        if np.any(too_close_curve):
+            self.stop_cmd()
+
+
+        #--------------------------------------------------------------------------------------------------------------------------
         
     def parameters_callback(self, params):
         for param in params:
