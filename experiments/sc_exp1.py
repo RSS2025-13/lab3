@@ -72,9 +72,9 @@ class SafetyController(Node):
         self.latest_nav_cmd = None
         self.add_on_set_parameters_callback(self.parameters_callback)
 
-        self.CAR_LENGTH = 0.3
-        self.CAR_WIDTH = 0.32
-        self.DIST_TO_BUMPER = 0.12
+        self.CAR_LENGTH = 0.55
+        self.CAR_WIDTH = 0.38
+        self.DIST_TO_BUMPER = 0.15
 
         self.get_logger().info("Safety Controller initialized")
 
