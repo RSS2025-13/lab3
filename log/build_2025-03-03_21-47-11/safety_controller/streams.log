@@ -1,0 +1,30 @@
+[0.453s] Invoking command in '/home/racecar/racecar_ws/src/team13/lab3/build/safety_controller': PYTHONPATH=/home/racecar/racecar_ws/src/team13/lab3/build/safety_controller/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/racecar/racecar_ws/src/team13/lab3/install/safety_controller/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/racecar/racecar_ws/src/team13/lab3/build/safety_controller/build --no-deps symlink_data
+[0.583s] /usr/lib/python3/dist-packages/setuptools/dist.py:723: UserWarning: Usage of dash-separated 'script-dir' will not be supported in future versions. Please use the underscore name 'script_dir' instead
+[0.584s]   warnings.warn(
+[0.608s] running develop
+[0.696s] running egg_info
+[0.698s] creating safety_controller.egg-info
+[0.698s] writing safety_controller.egg-info/PKG-INFO
+[0.698s] writing dependency_links to safety_controller.egg-info/dependency_links.txt
+[0.699s] writing entry points to safety_controller.egg-info/entry_points.txt
+[0.699s] writing requirements to safety_controller.egg-info/requires.txt
+[0.700s] writing top-level names to safety_controller.egg-info/top_level.txt
+[0.703s] writing manifest file 'safety_controller.egg-info/SOURCES.txt'
+[0.705s] reading manifest file 'safety_controller.egg-info/SOURCES.txt'
+[0.707s] writing manifest file 'safety_controller.egg-info/SOURCES.txt'
+[0.737s] running build_ext
+[0.738s] Creating /home/racecar/racecar_ws/src/team13/lab3/install/safety_controller/lib/python3.10/site-packages/safety-controller.egg-link (link to .)
+[0.740s] Installing safety_controller_node script to /home/racecar/racecar_ws/src/team13/lab3/install/safety_controller/lib/safety_controller
+[0.742s] 
+[0.742s] Installed /home/racecar/racecar_ws/src/team13/lab3/build/safety_controller
+[0.743s] running symlink_data
+[0.744s] creating /home/racecar/racecar_ws/src/team13/lab3/install/safety_controller/share/ament_index
+[0.744s] creating /home/racecar/racecar_ws/src/team13/lab3/install/safety_controller/share/ament_index/resource_index
+[0.745s] creating /home/racecar/racecar_ws/src/team13/lab3/install/safety_controller/share/ament_index/resource_index/packages
+[0.746s] symbolically linking /home/racecar/racecar_ws/src/team13/lab3/build/safety_controller/resource/safety_controller -> /home/racecar/racecar_ws/src/team13/lab3/install/safety_controller/share/ament_index/resource_index/packages
+[0.747s] symbolically linking /home/racecar/racecar_ws/src/team13/lab3/build/safety_controller/package.xml -> /home/racecar/racecar_ws/src/team13/lab3/install/safety_controller/share/safety_controller
+[0.747s] creating /home/racecar/racecar_ws/src/team13/lab3/install/safety_controller/share/safety_controller/launch
+[0.752s] symbolically linking /home/racecar/racecar_ws/src/team13/lab3/build/safety_controller/launch/safety_controller.launch.py -> /home/racecar/racecar_ws/src/team13/lab3/install/safety_controller/share/safety_controller/launch
+[0.757s] creating /home/racecar/racecar_ws/src/team13/lab3/install/safety_controller/share/safety_controller/config
+[0.759s] symbolically linking /home/racecar/racecar_ws/src/team13/lab3/build/safety_controller/config/safety_controller_params.yaml -> /home/racecar/racecar_ws/src/team13/lab3/install/safety_controller/share/safety_controller/config
+[0.762s] Invoked command in '/home/racecar/racecar_ws/src/team13/lab3/build/safety_controller' returned '0': PYTHONPATH=/home/racecar/racecar_ws/src/team13/lab3/build/safety_controller/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/racecar/racecar_ws/src/team13/lab3/install/safety_controller/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/racecar/racecar_ws/src/team13/lab3/build/safety_controller/build --no-deps symlink_data

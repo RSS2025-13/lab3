@@ -133,8 +133,8 @@ class SafetyController(Node):
         inner_wheel_radius = turning_radius - 0.5 * self.CAR_WIDTH
         outer_wheel_radius = turning_radius + 0.5 * self.CAR_WIDTH
 
-        inner_circle = turning_sign * inner_wheel_radius - turning_sign * np.sqrt(inner_wheel_radius**2 - x**2)
-        outer_circle = turning_sign * outer_wheel_radius - turning_sign * np.sqrt(outer_wheel_radius**2 - x**2)
+        inner_circle = turning_sign * inner_wheel_radius - turning_sign * np.sqrt(np.abs(inner_wheel_radius**2 - x**2))
+        outer_circle = turning_sign * outer_wheel_radius - turning_sign * np.sqrt(np.abs(outer_wheel_radius**2 - x**2))
 
         distance_line = - turning_sign * np.tan(np.pi / 2 - stop_distance / turning_radius) * x + turning_sign * turning_radius
             

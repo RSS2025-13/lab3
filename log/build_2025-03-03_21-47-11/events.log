@@ -1,0 +1,78 @@
+[0.000000] (-) TimerEvent: {}
+[0.000214] (robot_wall_follower) JobQueued: {'identifier': 'robot_wall_follower', 'dependencies': OrderedDict()}
+[0.000546] (safety_controller) JobQueued: {'identifier': 'safety_controller', 'dependencies': OrderedDict()}
+[0.001207] (robot_wall_follower) JobStarted: {'identifier': 'robot_wall_follower'}
+[0.010759] (safety_controller) JobStarted: {'identifier': 'safety_controller'}
+[0.100120] (-) TimerEvent: {}
+[0.209143] (-) TimerEvent: {}
+[0.310116] (-) TimerEvent: {}
+[0.419100] (-) TimerEvent: {}
+[0.462091] (safety_controller) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'develop', '--editable', '--build-directory', '/home/racecar/racecar_ws/src/team13/lab3/build/safety_controller/build', '--no-deps', 'symlink_data'], 'cwd': '/home/racecar/racecar_ws/src/team13/lab3/build/safety_controller', 'env': {'PYTHONIOENCODING': 'utf-8', 'HOSTNAME': 'f940e05dc8c8', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/home/racecar/racecar_ws/install/custom_msgs/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib', 'HOME': '/home/racecar', 'OLDPWD': '/home/racecar/racecar_ws/src/team13', 'ROS_PYTHON_VERSION': '3', 'COLCON_PREFIX_PATH': '/home/sim_ws/install:/home/racecar/racecar_ws/install', 'ROS_DISTRO': 'humble', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'TERM': 'xterm', 'ROS_LOCALHOST_ONLY': '0', 'PATH': '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', 'LANG': 'en_US.UTF-8', 'AMENT_PREFIX_PATH': '/home/sim_ws/install/racecar_simulator:/home/racecar/racecar_ws/install/wall_follower:/home/racecar/racecar_ws/install/ros_exercises:/home/racecar/racecar_ws/install/py_pubsub:/home/racecar/racecar_ws/install/hello:/opt/ros/humble', 'SIM_WS': '/home/sim_ws', 'PWD': '/home/racecar/racecar_ws/src/team13/lab3/build/safety_controller', 'PYTHONPATH': '/home/racecar/racecar_ws/src/team13/lab3/build/safety_controller/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/racecar/racecar_ws/src/team13/lab3/install/safety_controller/lib/python3.10/site-packages:/home/racecar/racecar_ws/build/wall_follower:/home/racecar/racecar_ws/install/wall_follower/lib/python3.8/site-packages:/home/racecar/racecar_ws/build/ros_exercises:/home/racecar/racecar_ws/install/ros_exercises/lib/python3.8/site-packages:/home/racecar/racecar_ws/build/py_pubsub:/home/racecar/racecar_ws/install/py_pubsub/lib/python3.8/site-packages:/home/racecar/racecar_ws/build/hello:/home/racecar/racecar_ws/install/hello/lib/python3.8/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages', 'NO_VNC_VERSION': '1.4.0', 'COLCON': '1', 'CMAKE_PREFIX_PATH': '/home/sim_ws/install/racecar_simulator:/home/racecar/racecar_ws/install/custom_msgs'}, 'shell': False}
+[0.469723] (robot_wall_follower) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'develop', '--editable', '--build-directory', '/home/racecar/racecar_ws/src/team13/lab3/build/robot_wall_follower/build', '--no-deps', 'symlink_data'], 'cwd': '/home/racecar/racecar_ws/src/team13/lab3/build/robot_wall_follower', 'env': {'PYTHONIOENCODING': 'utf-8', 'HOSTNAME': 'f940e05dc8c8', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/home/racecar/racecar_ws/install/custom_msgs/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib', 'HOME': '/home/racecar', 'OLDPWD': '/home/racecar/racecar_ws/src/team13', 'ROS_PYTHON_VERSION': '3', 'COLCON_PREFIX_PATH': '/home/sim_ws/install:/home/racecar/racecar_ws/install', 'ROS_DISTRO': 'humble', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'TERM': 'xterm', 'ROS_LOCALHOST_ONLY': '0', 'PATH': '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', 'LANG': 'en_US.UTF-8', 'AMENT_PREFIX_PATH': '/home/sim_ws/install/racecar_simulator:/home/racecar/racecar_ws/install/wall_follower:/home/racecar/racecar_ws/install/ros_exercises:/home/racecar/racecar_ws/install/py_pubsub:/home/racecar/racecar_ws/install/hello:/opt/ros/humble', 'SIM_WS': '/home/sim_ws', 'PWD': '/home/racecar/racecar_ws/src/team13/lab3/build/robot_wall_follower', 'PYTHONPATH': '/home/racecar/racecar_ws/src/team13/lab3/build/robot_wall_follower/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/racecar/racecar_ws/src/team13/lab3/install/robot_wall_follower/lib/python3.10/site-packages:/home/racecar/racecar_ws/build/wall_follower:/home/racecar/racecar_ws/install/wall_follower/lib/python3.8/site-packages:/home/racecar/racecar_ws/build/ros_exercises:/home/racecar/racecar_ws/install/ros_exercises/lib/python3.8/site-packages:/home/racecar/racecar_ws/build/py_pubsub:/home/racecar/racecar_ws/install/py_pubsub/lib/python3.8/site-packages:/home/racecar/racecar_ws/build/hello:/home/racecar/racecar_ws/install/hello/lib/python3.8/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages', 'NO_VNC_VERSION': '1.4.0', 'COLCON': '1', 'CMAKE_PREFIX_PATH': '/home/sim_ws/install/racecar_simulator:/home/racecar/racecar_ws/install/custom_msgs'}, 'shell': False}
+[0.522602] (-) TimerEvent: {}
+[0.593364] (safety_controller) StderrLine: {'line': b"/usr/lib/python3/dist-packages/setuptools/dist.py:723: UserWarning: Usage of dash-separated 'script-dir' will not be supported in future versions. Please use the underscore name 'script_dir' instead\n"}
+[0.593991] (safety_controller) StderrLine: {'line': b'  warnings.warn(\n'}
+[0.599996] (robot_wall_follower) StderrLine: {'line': b"/usr/lib/python3/dist-packages/setuptools/dist.py:723: UserWarning: Usage of dash-separated 'script-dir' will not be supported in future versions. Please use the underscore name 'script_dir' instead\n"}
+[0.600930] (robot_wall_follower) StderrLine: {'line': b'  warnings.warn(\n'}
+[0.616912] (safety_controller) StdoutLine: {'line': b'running develop\n'}
+[0.623098] (-) TimerEvent: {}
+[0.628349] (robot_wall_follower) StdoutLine: {'line': b'running develop\n'}
+[0.706294] (safety_controller) StdoutLine: {'line': b'running egg_info\n'}
+[0.707026] (safety_controller) StdoutLine: {'line': b'creating safety_controller.egg-info\n'}
+[0.708691] (safety_controller) StdoutLine: {'line': b'writing safety_controller.egg-info/PKG-INFO\n'}
+[0.709160] (safety_controller) StdoutLine: {'line': b'writing dependency_links to safety_controller.egg-info/dependency_links.txt\n'}
+[0.709519] (safety_controller) StdoutLine: {'line': b'writing entry points to safety_controller.egg-info/entry_points.txt\n'}
+[0.709991] (safety_controller) StdoutLine: {'line': b'writing requirements to safety_controller.egg-info/requires.txt\n'}
+[0.710381] (safety_controller) StdoutLine: {'line': b'writing top-level names to safety_controller.egg-info/top_level.txt\n'}
+[0.713242] (safety_controller) StdoutLine: {'line': b"writing manifest file 'safety_controller.egg-info/SOURCES.txt'\n"}
+[0.715611] (safety_controller) StdoutLine: {'line': b"reading manifest file 'safety_controller.egg-info/SOURCES.txt'\n"}
+[0.716943] (safety_controller) StdoutLine: {'line': b"writing manifest file 'safety_controller.egg-info/SOURCES.txt'\n"}
+[0.719249] (robot_wall_follower) StdoutLine: {'line': b'running egg_info\n'}
+[0.719766] (robot_wall_follower) StdoutLine: {'line': b'creating robot_wall_follower.egg-info\n'}
+[0.720409] (robot_wall_follower) StdoutLine: {'line': b'writing robot_wall_follower.egg-info/PKG-INFO\n'}
+[0.720996] (robot_wall_follower) StdoutLine: {'line': b'writing dependency_links to robot_wall_follower.egg-info/dependency_links.txt\n'}
+[0.721544] (robot_wall_follower) StdoutLine: {'line': b'writing entry points to robot_wall_follower.egg-info/entry_points.txt\n'}
+[0.721936] (robot_wall_follower) StdoutLine: {'line': b'writing requirements to robot_wall_follower.egg-info/requires.txt\n'}
+[0.722358] (robot_wall_follower) StdoutLine: {'line': b'writing top-level names to robot_wall_follower.egg-info/top_level.txt\n'}
+[0.722857] (robot_wall_follower) StdoutLine: {'line': b"writing manifest file 'robot_wall_follower.egg-info/SOURCES.txt'\n"}
+[0.723203] (-) TimerEvent: {}
+[0.726620] (robot_wall_follower) StdoutLine: {'line': b"reading manifest file 'robot_wall_follower.egg-info/SOURCES.txt'\n"}
+[0.727951] (robot_wall_follower) StdoutLine: {'line': b"writing manifest file 'robot_wall_follower.egg-info/SOURCES.txt'\n"}
+[0.745889] (safety_controller) StdoutLine: {'line': b'running build_ext\n'}
+[0.748237] (safety_controller) StdoutLine: {'line': b'Creating /home/racecar/racecar_ws/src/team13/lab3/install/safety_controller/lib/python3.10/site-packages/safety-controller.egg-link (link to .)\n'}
+[0.748651] (robot_wall_follower) StdoutLine: {'line': b'running build_ext\n'}
+[0.749016] (robot_wall_follower) StdoutLine: {'line': b'Creating /home/racecar/racecar_ws/src/team13/lab3/install/robot_wall_follower/lib/python3.10/site-packages/robot-wall-follower.egg-link (link to .)\n'}
+[0.750125] (robot_wall_follower) StdoutLine: {'line': b'Installing robot_wall_follower script to /home/racecar/racecar_ws/src/team13/lab3/install/robot_wall_follower/lib/robot_wall_follower\n'}
+[0.750973] (safety_controller) StdoutLine: {'line': b'Installing safety_controller_node script to /home/racecar/racecar_ws/src/team13/lab3/install/safety_controller/lib/safety_controller\n'}
+[0.751539] (robot_wall_follower) StdoutLine: {'line': b'Installing test_wall_follower script to /home/racecar/racecar_ws/src/team13/lab3/install/robot_wall_follower/lib/robot_wall_follower\n'}
+[0.752232] (safety_controller) StdoutLine: {'line': b'\n'}
+[0.752613] (safety_controller) StdoutLine: {'line': b'Installed /home/racecar/racecar_ws/src/team13/lab3/build/safety_controller\n'}
+[0.753249] (robot_wall_follower) StdoutLine: {'line': b'Installing viz_example script to /home/racecar/racecar_ws/src/team13/lab3/install/robot_wall_follower/lib/robot_wall_follower\n'}
+[0.753832] (safety_controller) StdoutLine: {'line': b'running symlink_data\n'}
+[0.754348] (safety_controller) StdoutLine: {'line': b'creating /home/racecar/racecar_ws/src/team13/lab3/install/safety_controller/share/ament_index\n'}
+[0.754955] (safety_controller) StdoutLine: {'line': b'creating /home/racecar/racecar_ws/src/team13/lab3/install/safety_controller/share/ament_index/resource_index\n'}
+[0.755237] (safety_controller) StdoutLine: {'line': b'creating /home/racecar/racecar_ws/src/team13/lab3/install/safety_controller/share/ament_index/resource_index/packages\n'}
+[0.755633] (robot_wall_follower) StdoutLine: {'line': b'\n'}
+[0.755943] (robot_wall_follower) StdoutLine: {'line': b'Installed /home/racecar/racecar_ws/src/team13/lab3/build/robot_wall_follower\n'}
+[0.756263] (safety_controller) StdoutLine: {'line': b'symbolically linking /home/racecar/racecar_ws/src/team13/lab3/build/safety_controller/resource/safety_controller -> /home/racecar/racecar_ws/src/team13/lab3/install/safety_controller/share/ament_index/resource_index/packages\n'}
+[0.756576] (robot_wall_follower) StdoutLine: {'line': b'running symlink_data\n'}
+[0.756952] (robot_wall_follower) StdoutLine: {'line': b'symbolically linking /home/racecar/racecar_ws/src/team13/lab3/build/robot_wall_follower/package.xml -> /home/racecar/racecar_ws/src/team13/lab3/install/robot_wall_follower/share/robot_wall_follower\n'}
+[0.757365] (safety_controller) StdoutLine: {'line': b'symbolically linking /home/racecar/racecar_ws/src/team13/lab3/build/safety_controller/package.xml -> /home/racecar/racecar_ws/src/team13/lab3/install/safety_controller/share/safety_controller\n'}
+[0.757708] (safety_controller) StdoutLine: {'line': b'creating /home/racecar/racecar_ws/src/team13/lab3/install/safety_controller/share/safety_controller/launch\n'}
+[0.758067] (robot_wall_follower) StdoutLine: {'line': b'symbolically linking /home/racecar/racecar_ws/src/team13/lab3/build/robot_wall_follower/robot_wall_follower/params.yaml -> /home/racecar/racecar_ws/src/team13/lab3/install/robot_wall_follower/share/robot_wall_follower\n'}
+[0.758419] (safety_controller) StdoutLine: {'line': b'symbolically linking /home/racecar/racecar_ws/src/team13/lab3/build/safety_controller/launch/safety_controller.launch.py -> /home/racecar/racecar_ws/src/team13/lab3/install/safety_controller/share/safety_controller/launch\n'}
+[0.764319] (safety_controller) StdoutLine: {'line': b'creating /home/racecar/racecar_ws/src/team13/lab3/install/safety_controller/share/safety_controller/config\n'}
+[0.769106] (robot_wall_follower) StdoutLine: {'line': b'creating /home/racecar/racecar_ws/src/team13/lab3/install/robot_wall_follower/share/ament_index\n'}
+[0.769327] (robot_wall_follower) StdoutLine: {'line': b'creating /home/racecar/racecar_ws/src/team13/lab3/install/robot_wall_follower/share/ament_index/resource_index\n'}
+[0.769499] (safety_controller) StdoutLine: {'line': b'symbolically linking /home/racecar/racecar_ws/src/team13/lab3/build/safety_controller/config/safety_controller_params.yaml -> /home/racecar/racecar_ws/src/team13/lab3/install/safety_controller/share/safety_controller/config\n'}
+[0.769667] (robot_wall_follower) StdoutLine: {'line': b'creating /home/racecar/racecar_ws/src/team13/lab3/install/robot_wall_follower/share/ament_index/resource_index/packages\n'}
+[0.769814] (robot_wall_follower) StdoutLine: {'line': b'symbolically linking /home/racecar/racecar_ws/src/team13/lab3/build/robot_wall_follower/resource/robot_wall_follower -> /home/racecar/racecar_ws/src/team13/lab3/install/robot_wall_follower/share/ament_index/resource_index/packages\n'}
+[0.769969] (robot_wall_follower) StdoutLine: {'line': b'creating /home/racecar/racecar_ws/src/team13/lab3/install/robot_wall_follower/share/robot_wall_follower/launch\n'}
+[0.770118] (robot_wall_follower) StdoutLine: {'line': b'symbolically linking /home/racecar/racecar_ws/src/team13/lab3/build/robot_wall_follower/launch/wall_follower.launch.xml -> /home/racecar/racecar_ws/src/team13/lab3/install/robot_wall_follower/share/robot_wall_follower/launch\n'}
+[0.770269] (robot_wall_follower) StdoutLine: {'line': b'symbolically linking /home/racecar/racecar_ws/src/team13/lab3/build/robot_wall_follower/launch/launch_test.launch.py -> /home/racecar/racecar_ws/src/team13/lab3/install/robot_wall_follower/share/robot_wall_follower/launch\n'}
+[0.770428] (robot_wall_follower) StdoutLine: {'line': b'symbolically linking /home/racecar/racecar_ws/src/team13/lab3/build/robot_wall_follower/launch/launch_test_sim.launch.py -> /home/racecar/racecar_ws/src/team13/lab3/install/robot_wall_follower/share/robot_wall_follower/launch\n'}
+[0.771701] (safety_controller) CommandEnded: {'returncode': 0}
+[0.793183] (safety_controller) JobEnded: {'identifier': 'safety_controller', 'rc': 0}
+[0.794873] (robot_wall_follower) CommandEnded: {'returncode': 0}
+[0.804778] (robot_wall_follower) JobEnded: {'identifier': 'robot_wall_follower', 'rc': 0}
+[0.805868] (-) EventReactorShutdown: {}
