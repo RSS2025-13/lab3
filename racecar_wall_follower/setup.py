@@ -29,6 +29,9 @@ setup(
 	        'viz_example = robot_wall_follower.viz_example:main',
         	'test_wall_follower = robot_wall_follower.test_wall_follower:main',
             'safety_controller = robot_wall_follower.safety_controller:main',
+            'sc_exp1 = robot_wall_follower.sc_exp1:main',
+            'sc_exp2 = robot_wall_follower.sc_exp2:main',
+            'braketest = robot_wall_follower.braketest:main',
         ],
     },
 )

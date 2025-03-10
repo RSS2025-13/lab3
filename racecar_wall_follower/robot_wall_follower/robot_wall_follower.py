@@ -6,13 +6,13 @@ from sensor_msgs.msg import LaserScan
 from ackermann_msgs.msg import AckermannDriveStamped
 from visualization_msgs.msg import Marker
 from rcl_interfaces.msg import SetParametersResult
-
 from robot_wall_follower.evaluations import Evaluations
-
 from robot_wall_follower.visualization_tools import VisualizationTools
 
 
 class WallFollower(Node):
+
+    WALL_TOPIC = "/wall"
 
     def __init__(self):
         super().__init__("wall_follower")
@@ -21,126 +21,127 @@ class WallFollower(Node):
         self.declare_parameter("scan_topic", "/scan")
         self.declare_parameter("drive_topic", "/vesc/high_level/input/nav_0")
         self.declare_parameter("side", -1)
-        self.declare_parameter("velocity", 1.0)
-        self.declare_parameter("desired_distance", 1.)
+        self.declare_parameter("velocity", 0.5)
+        self.declare_parameter("desired_distance", 0.5)
+        self.declare_parameter("kp", 0.6)
+        self.declare_parameter("kd", 0.0)
+        self.declare_parameter("ki", 0.0)
 
-        # TODO Fetch constants from the ROS parameter server
-        # This is necessary for the tests to be able to test varying parameters!
+        # Fetch constants from the ROS parameter server
+        # DO NOT MODIFY THIS! This is necessary for the tests to be able to test varying parameters!
         self.SCAN_TOPIC = self.get_parameter('scan_topic').get_parameter_value().string_value
         self.DRIVE_TOPIC = self.get_parameter('drive_topic').get_parameter_value().string_value
         self.SIDE = self.get_parameter('side').get_parameter_value().integer_value
         self.VELOCITY = self.get_parameter('velocity').get_parameter_value().double_value
         self.DESIRED_DISTANCE = self.get_parameter('desired_distance').get_parameter_value().double_value
-
-         # This activates the parameters_callback function so that the tests are able
+		
+        # This activates the parameters_callback function so that the tests are able
         # to change the parameters during testing.
         # DO NOT MODIFY THIS! 
         self.add_on_set_parameters_callback(self.parameters_callback)
-		
-	# TODO: Initialize your publishers and subscribers here
-        self.scan_subscriber = self.create_subscription(LaserScan, self.SCAN_TOPIC, self.scan_callback, 10) 
+  
+        # TODO: Initialize your publishers and subscribers here
+        self.line_pub = self.create_publisher(Marker, self.WALL_TOPIC, 1)
+
+        self.scan_subscriber = self.create_subscription(LaserScan, self.SCAN_TOPIC, self.listener_callback, 10)
         self.drive_publisher = self.create_publisher(AckermannDriveStamped, self.DRIVE_TOPIC, 10)
 
-        # a publisher for our line marker
-        self.line_pub = self.create_publisher(Marker, '/wall', 1)
+        self.previous_error = 0
+        self.previous_time = self.get_clock().now()
+        self.left_or_right = self.SIDE
+
+        self.kp = self.get_parameter('kp').get_parameter_value().double_value
+        self.kd = self.get_parameter('kd').get_parameter_value().double_value
+        self.ki = self.get_parameter('ki').get_parameter_value().double_value
+
+        self.get_logger().info(f'kp: "{self.kp}"')
+        self.get_logger().info(f'kd: "{self.kd}"')
+        self.get_logger().info(f'v2')
 
         self.evals = Evaluations()
 
-    # TODO: Write your callback functions here    
-    def scan_callback(self, msg):
-        # Get the distances
-        msg_ranges = np.array(msg.ranges)
-        angles = np.linspace(msg.angle_min, msg.angle_max, len(msg_ranges))
-        self.angle_min = np.pi/16
-        self.angle_max = np.pi/4
-        self.angle_front = np.pi/64
+        # TODO: Write your callback functions here
 
-        #Create a dedicated range for the front of the vehicle
-        lower_index = (np.abs(angles - (-1*self.angle_front)).argmin())
-        upper_index = (np.abs(angles - (self.angle_front)).argmin())
-        front_distances = msg_ranges[lower_index:upper_index]
+    def listener_callback(self, msg):
+        ads_msg = AckermannDriveStamped()
 
-        # Isolate the ranges that you are looking at depending on the side
-        if self.SIDE == -1:
-            lower_index = (np.abs(angles - (-1*self.angle_max)).argmin())
-            upper_index = (np.abs(angles - (-1*self.angle_min)).argmin())
-            distances = msg_ranges[lower_index:upper_index]
-        else:
-            lower_index = (np.abs(angles - (self.angle_min)).argmin())
-            upper_index = (np.abs(angles - (self.angle_max)).argmin())
-            distances = msg_ranges[lower_index:upper_index]
+        now = self.get_clock().now()
+
+        ads_msg.header.stamp = now.to_msg()
+        ads_msg.header.frame_id = 'base_link'
         
-        # Check if we have valid distances
-        if len(distances) == 0:
-            self.get_logger().warn("No valid distances found in range!")
-            return
-        #self.get_logger().info(f'distances: {distances}')
-        # Set Kp and Kd values
-        self.Kp = 1.0
-        self.Kd = 0.5
+        
+        ads_msg.drive.speed = self.VELOCITY
+        #ads_msg.drive.steering_angle = np.pi/4
+        ads_msg.drive.steering_angle = self.PID_angle(laser_msg = msg, current_time = now)
 
-        # Initialize previous_error if not already set
-        if not hasattr(self, 'previous_error'):
-            self.previous_error = 0.0
-    
-        # Use linear regression to fit a line to the distances
-        slope, intercept = self.linear_regression(distances)
+        self.drive_publisher.publish(ads_msg)
 
-        # Calculate the perpendicular distance to the line
-        distance = self.perpendicular_distance(slope, intercept)
+        #self.get_logger().info(f'min angle: "{msg.angle_min}" and max_angle: "{msg.angle_max}"')
+        #self.get_logger().info(f'published angle "{ads_msg.drive.steering_angle}"and speed "{ads_msg.drive.speed}"')
 
-        if np.any(front_distances < 1.5):
-            distancef = np.mean(front_distances)
-            factor = distancef/3
-            distance  = distance * factor
+    def PID_angle(self, laser_msg, current_time):
+        #Creating array of desired values
+        ranges_array = np.array(laser_msg.ranges)   #converts ranges array to numpy array for manipulation
+        min_angle_sweep = -3*np.pi/4   #-2*np.pi/3
+        max_angle_sweep =  np.pi/12 #-np.pi/6  #Gets the max angle to sweep to (min is -3pi/4)
+        
+        number_of_elements_sweeped = int((max_angle_sweep - min_angle_sweep) / laser_msg.angle_increment) + 1   #determines the number of values within that sweep given the angle increment
+        first_index = int(np.abs(laser_msg.angle_min - min_angle_sweep) / laser_msg.angle_increment)
+        last_index = first_index + number_of_elements_sweeped
+        side_ranges_array = ranges_array[:last_index] if self.SIDE == -1 else ranges_array[-last_index:]     #Creates an array of just the desired values from that side
 
-        # Calculate the Error
-        error = self.DESIRED_DISTANCE - distance
+        #creates x and y values from each Lidar Scan point
+        thetas = np.arange(min_angle_sweep, max_angle_sweep, laser_msg.angle_increment) if self.SIDE == -1 else np.arange(-1 * max_angle_sweep, -1 * min_angle_sweep, laser_msg.angle_increment)
+        x_array = side_ranges_array * np.cos(thetas)
+        y_array = side_ranges_array * np.sin(thetas)
 
-        # Calculate the Derivative
-        derivative = error - self.previous_error
-        self.previous_error = error  # Save error for next iteration
+        #create a LSR 
 
-        # Calculate the Steering Angle
-        steering_angle = self.Kp * error + self.Kd * derivative
-        #self.get_logger().info(f'{steering_angle}')
+        #limiting values with r > 4m
+        mask = side_ranges_array <= 3  # Boolean mask where values are <= 4
+        new_x_array = x_array[mask]
+        new_y_array = y_array[mask]
 
-        # Create an AckermannDriveStamped message
-        drive_msg = AckermannDriveStamped()
-        drive_msg.drive.steering_angle = (-1*self.SIDE) * steering_angle
-        drive_msg.drive.acceleration = 0.0
-        drive_msg.drive.jerk = 0.0
-        drive_msg.drive.speed = self.VELOCITY
+        coeffs = np.polyfit(new_x_array, new_y_array, 1)
 
-        # Publish the drive message
-        self.drive_publisher.publish(drive_msg)
+        #Find the shortest distance between the line and the car
+        d = np.abs(coeffs[1]) / np.sqrt(1 + (coeffs[0]**2))
+
+        #distance to a wall
+        d_wall = ranges_array[len(ranges_array)//2]
+        if d_wall < 1.5:
+            factor = d_wall/3
+            d  = d * factor
 
         #update evals
-        self.evals.update(distance)
-        
+        self.evals.update(d, self.DESIRED_DISTANCE)
+
+        #Determine error and PID controller
+        error = (self.DESIRED_DISTANCE - d) * (-1 if self.SIDE == 1 else 1)
+
+        #self.left_or_right = (-1 if self.previous_error <= error else 1) * self.left_or_right
+        delta_e = error - self.previous_error
+        delta_t = (current_time - self.previous_time).nanoseconds / 1e9
+
+        proportional = self.kp * error
+
+        derivative = self.kd * (delta_e / delta_t)
+
+        integral = self.ki * (error * delta_t)
+
+        u_t = (proportional + derivative + integral) #* self.left_or_right
+
+        self.previous_time = current_time
+        self.previous_error = error
+
+        #Visualization
+        y_visual = coeffs[0] * new_x_array + coeffs[1]
+        VisualizationTools.plot_line(new_x_array, y_visual, self.line_pub, frame="/laser")
+
+        return u_t
     
-    def linear_regression(self, distances):
-        # Convert polar coordinates to Cartesian
-        angles = np.linspace(-1*self.angle_max, -1*self.angle_min, len(distances)) if self.SIDE == -1 else np.linspace(self.angle_min, self.angle_max, len(distances))
-        x = distances * np.cos(angles)
-        y = distances * np.sin(angles)
-        
-        # Fit line to Cartesian points
-        slope, intercept = np.polyfit(x, y, 1)
-
-        # Visualize the line
-        # Create points along the fitted line for visualization
-        x_line = np.array([np.min(x), np.max(x)])  # Use range of detected points
-        y_line = slope * x_line + intercept  # Calculate corresponding y values
-        VisualizationTools.plot_line(x_line, y_line, self.line_pub)
-
-        return slope, intercept
-
-    def perpendicular_distance(self, slope, intercept):
-        #Calculate the perpendicular distance to the line
-        distance = np.abs(intercept) / np.sqrt(slope**2 + 1)
-        return distance
-
+    
     def parameters_callback(self, params):
         """
         DO NOT MODIFY THIS CALLBACK FUNCTION!
@@ -171,3 +172,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+    
