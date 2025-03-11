@@ -36,7 +36,8 @@ class Evaluations:
 
         self.desired_distance = desired_distance  # Update the target distance dynamically
         self.calculate_score()
-        self.update_plot()
+        return self.current_score
+        #self.update_plot()
 
     def update_plot(self):
         self.line.set_xdata(self.time_steps)
@@ -62,9 +63,9 @@ class Evaluations:
     def calculate_score(self):
         np_distances = np.array(self.distances)
         loss = np.sum(np.abs(np_distances - self.desired_distance))
-        alpha = .01
-
-        self.current_score = 1/(1+(alpha*loss)**(2))
+        self.current_score = loss/len(np_distances)
+        #alpha = .01
+        #self.current_score = 1/(1+(alpha*loss)**(2))
         
         
         

@@ -115,7 +115,7 @@ class WallFollower(Node):
             d  = d * factor
 
         #update evals
-        self.evals.update(d, self.DESIRED_DISTANCE)
+        current_score = self.evals.update(d, self.DESIRED_DISTANCE)
 
         #Determine error and PID controller
         error = (self.DESIRED_DISTANCE - d) * (-1 if self.SIDE == 1 else 1)
